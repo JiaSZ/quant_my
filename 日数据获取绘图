@@ -1,0 +1,27 @@
+from WindPy import w
+import pandas as pd
+import numpy as np
+import mplfinance as fin
+
+w.start()
+w.isconnected()
+
+data = w.wsd(codes = "000300.SH", \
+            fields = "open, close, high, low, volume, trade_code", \
+            beginTime = "2008", endTime = "", \
+            options = "")
+
+df = pd.DataFrame(data.Data, index=data.Fields, columns = data.Times).T
+df = pd.DataFrame(df, dtype=np.float)
+df.index = pd.to_datetime(df.index)
+df.columns = ["open", "close", "high", "low", "volume", "trade_code"]
+
+fin.plot(
+    data=df,
+    type="candle",
+    title="000300",
+    ylabel="price",
+    style="binance",
+    volume=True,
+    ylabel_lower="volume(shares)"
+)
